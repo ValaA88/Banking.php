@@ -76,7 +76,21 @@ if(isset($_POST['register'])){
 
     $sqlInsert = "INSERT INTO `users`(`username`, `password`, `name`, `email`, `date_of_birth`) VALUES ('{$username}','{$password}','{$name}','{$email}','{$date_of_birth}')";
 
-    $resultInsert = mysqli_query($conn, $sqlInsert);
+    $sqlJoin = "SELECT * FROM `users`
+    JOIN accounts ON users.id = accounts.user_id";
+
+    if($resultInsert = mysqli_query($conn, $sqlInsert)){
+    $last_id = $conn->insert_id;
+    $createAccount = "INSERT INTO accounts (balance, user_id) VALUES ('0','{$last_id}')";
+    mysqli_query($conn, $createAccount);
+    if($resultJoin = mysqli_query($conn, $sqlJoin)){
+      mysqli_commit($conn);
+        echo "success";
+      $username = $name = $email = $date_of_birth = $id = $balance = "";
+      } else {
+        echo "error";
+      }
+    }
   }
 
 }
